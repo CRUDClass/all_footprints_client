@@ -6,10 +6,7 @@
     "moduleResolution": "bundler",
     "strict": true,
     "noEmit": true,
-    "isolatedModules": true,
-    "paths": {
-      "#build/ui": ["./node_modules/.nuxt-ui/ui"]
-    }
+    "isolatedModules": true
   },
   "include": ["vite.config.ts"]
 }
