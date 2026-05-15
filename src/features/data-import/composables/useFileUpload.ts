@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import { uploadBill } from '@/data/api/bill'
 
-export function useFileUpload(accept: string, onSuccess: () => void) {
+export function useFileUpload(onSuccess: () => void) {
   const uploading = ref(false)
   const fileInput = ref<HTMLInputElement | undefined>()
 
