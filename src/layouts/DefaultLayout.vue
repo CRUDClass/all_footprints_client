@@ -1,14 +1,8 @@
 <script setup lang="ts">
-const colorMode = useColorMode()
+import { useDark, useToggle } from '@vueuse/core'
 
-const isDark = computed({
-  get() {
-    return colorMode.value === 'dark'
-  },
-  set(val: boolean) {
-    colorMode.value = val ? 'dark' : 'light'
-  },
-})
+const isDark = useDark()
+const toggleDark = useToggle(isDark)
 
 const navItems = [
   { label: '首页', icon: 'i-heroicons-home', to: '/' },
@@ -31,7 +25,7 @@ const navItems = [
           <UButton
             :icon="isDark ? 'i-heroicons-sun' : 'i-heroicons-moon'"
             variant="ghost"
-            @click="isDark = !isDark"
+            @click="toggleDark()"
           />
         </UTooltip>
       </template>

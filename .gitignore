@@ -3,6 +3,7 @@ node_modules/
 
 # Build
 dist/
+*.tsbuildinfo
 
 # Auto-generated type declarations (Nuxt UI)
 auto-imports.d.ts

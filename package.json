@@ -6,13 +6,15 @@
   "description": "万象数迹 - 个人数据管理系统",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc -b && vite build",
+    "build": "vite build",
+    "typecheck": "vue-tsc --noEmit",
     "preview": "vite preview",
     "lint": "eslint .",
     "format": "prettier --write \"src/**/*.{ts,vue,css}\""
   },
   "dependencies": {
     "@nuxt/ui": "^4.7.1",
+    "@vueuse/core": "^14.3.0",
     "pinia": "^3.0.0",
     "vue": "^3.5.0",
     "vue-router": "^4.5.0"
