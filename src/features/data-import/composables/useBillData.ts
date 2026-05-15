@@ -17,8 +17,14 @@ export function useBillData(source: 'WX' | 'ZFB') {
         pageSize: pageSize.value,
         source,
       })
+      if (res.code !== 0) {
+        console.error('获取账单数据失败:', res.message)
+        return
+      }
       bills.value = res.data.records
       total.value = res.data.total
+    } catch (e) {
+      console.error('获取账单数据失败:', e)
     } finally {
       loading.value = false
     }

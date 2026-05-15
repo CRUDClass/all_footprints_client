@@ -14,6 +14,8 @@ export function useFileUpload(onSuccess: () => void) {
     try {
       await uploadBill(file)
       onSuccess()
+    } catch (e) {
+      console.error('文件上传失败:', e)
     } finally {
       uploading.value = false
       target.value = '' // 重置 input 以允许重复选择同一文件
