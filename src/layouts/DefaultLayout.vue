@@ -10,17 +10,31 @@ const sidebarOpen = ref(false)
 
 const navItems = [
   { label: '首页', icon: 'i-heroicons-home', to: '/' },
-  { label: '账单导入', icon: 'i-heroicons-arrow-up-tray', to: '/data-import' },
+  {
+    label: '账单',
+    icon: 'i-heroicons-arrow-up-tray',
+    defaultOpen: true,
+    children: [
+      { label: '微信', to: '/bill/wechat' },
+      { label: '支付宝', to: '/bill/alipay' },
+    ],
+  },
 ]
 
 const route = useRoute()
 
 const breadcrumbItems = computed(() => {
   if (route.path === '/') return [{ label: '首页', to: '/' }]
-  if (route.path === '/data-import') {
+  if (route.path === '/bill/wechat') {
     return [
       { label: '首页', to: '/' },
-      { label: '账单导入', to: '/data-import' },
+      { label: '微信', to: '/bill/wechat' },
+    ]
+  }
+  if (route.path === '/bill/alipay') {
+    return [
+      { label: '首页', to: '/' },
+      { label: '支付宝', to: '/bill/alipay' },
     ]
   }
   return [{ label: '首页', to: '/' }]

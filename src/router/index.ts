@@ -11,9 +11,14 @@ export const routes: RouteRecordRaw[] = [
         component: () => import('@/features/dashboard/pages/DashboardPage.vue'),
       },
       {
-        path: 'data-import',
-        name: 'data-import',
-        component: () => import('@/features/data-import/pages/DataImportPage.vue'),
+        path: 'bill/wechat',
+        name: 'bill-wechat',
+        component: () => import('@/features/data-import/pages/WeChatPage.vue'),
+      },
+      {
+        path: 'bill/alipay',
+        name: 'bill-alipay',
+        component: () => import('@/features/data-import/pages/AlipayPage.vue'),
       },
     ],
   },
