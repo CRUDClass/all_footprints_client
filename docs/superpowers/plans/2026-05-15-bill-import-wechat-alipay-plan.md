@@ -202,7 +202,7 @@ export function useBillData(source: 'WX' | 'ZFB') {
 import { ref } from 'vue'
 import { uploadBill } from '@/data/api/bill'
 
-export function useFileUpload(accept: string, onSuccess: () => void) {
+export function useFileUpload(onSuccess: () => void) {
   const uploading = ref(false)
   const fileInput = ref<HTMLInputElement | undefined>()
 
@@ -359,7 +359,7 @@ const appStore = useAppStore()
 appStore.setPageTitle('微信账单')
 
 const { bills, total, page, pageSize, loading, loadBills } = useBillData('WX')
-const { uploading, fileInput, handleFileChange, triggerFilePicker } = useFileUpload('.xlsx,.xls', () => loadBills())
+const { uploading, fileInput, handleFileChange, triggerFilePicker } = useFileUpload(() => loadBills())
 
 const columns = [
   { key: 'tradeTime', label: '交易时间' },
@@ -439,7 +439,7 @@ const appStore = useAppStore()
 appStore.setPageTitle('支付宝账单')
 
 const { bills, total, page, pageSize, loading, loadBills } = useBillData('ZFB')
-const { uploading, fileInput, handleFileChange, triggerFilePicker } = useFileUpload('.csv', () => loadBills())
+const { uploading, fileInput, handleFileChange, triggerFilePicker } = useFileUpload(() => loadBills())
 
 const columns = [
   { key: 'tradeTime', label: '交易时间' },
