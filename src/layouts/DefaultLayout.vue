@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
-
 const colorMode = useColorMode()
-const router = useRouter()
 
 const isDark = computed({
   get() {
