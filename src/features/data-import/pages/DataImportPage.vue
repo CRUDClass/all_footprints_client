@@ -2,7 +2,7 @@
 import { useAppStore } from '@/stores'
 
 const appStore = useAppStore()
-appStore.setPageTitle('数据导入')
+appStore.setPageTitle('账单导入')
 </script>
 
 <template>
