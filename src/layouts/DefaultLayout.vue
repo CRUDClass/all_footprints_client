@@ -74,7 +74,7 @@ const breadcrumbItems = computed(() => {
       }"
     >
       <template #header>
-        <UIcon name="i-logos-nuxt-icon" class="size-8" />
+        <UIcon name="i-lucide-footprints" class="size-8" />
       </template>
 
       <UNavigationMenu
@@ -100,7 +100,7 @@ const breadcrumbItems = computed(() => {
           :icon="side === 'left' ? 'i-lucide-panel-left' : 'i-lucide-panel-right'"
           color="neutral"
           variant="ghost"
-          aria-label="Toggle sidebar"
+          aria-label="侧边栏切换"
           @click="sidebarOpen = !sidebarOpen"
         />
 
