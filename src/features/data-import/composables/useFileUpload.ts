@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import { uploadBill } from '@/data/api/bill'
 
-export function useFileUpload(onSuccess: () => void) {
+export function useFileUpload(source: 'WX' | 'ZFB', onSuccess: () => void) {
   const uploading = ref(false)
   const fileInput = ref<HTMLInputElement | undefined>()
 
@@ -12,7 +12,7 @@ export function useFileUpload(onSuccess: () => void) {
 
     uploading.value = true
     try {
-      await uploadBill(file)
+      await uploadBill(file, source)
       onSuccess()
     } catch (e) {
       console.error('文件上传失败:', e)

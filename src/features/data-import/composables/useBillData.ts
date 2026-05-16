@@ -18,7 +18,7 @@ export function useBillData(source: 'WX' | 'ZFB') {
         source,
       })
       if (res.code !== 0) {
-        console.error('获取账单数据失败:', res.message)
+        console.error('获取账单数据失败:', res.msg)
         return
       }
       bills.value = res.data.records

@@ -8,7 +8,7 @@ const appStore = useAppStore()
 appStore.setPageTitle('微信账单')
 
 const { bills, total, page, pageSize, loading, loadBills } = useBillData('WX')
-const { uploading, fileInput, handleFileChange, triggerFilePicker } = useFileUpload(() => loadBills())
+const { uploading, fileInput, handleFileChange, triggerFilePicker } = useFileUpload('WX', () => loadBills())
 
 const columns = [
   { key: 'tradeTime', label: '交易时间' },

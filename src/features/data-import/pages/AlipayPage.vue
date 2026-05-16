@@ -8,7 +8,7 @@ const appStore = useAppStore()
 appStore.setPageTitle('支付宝账单')
 
 const { bills, total, page, pageSize, loading, loadBills } = useBillData('ZFB')
-const { uploading, fileInput, handleFileChange, triggerFilePicker } = useFileUpload(() => loadBills())
+const { uploading, fileInput, handleFileChange, triggerFilePicker } = useFileUpload('ZFB', () => loadBills())
 
 const columns = [
   { key: 'tradeTime', label: '交易时间' },

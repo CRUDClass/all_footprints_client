@@ -61,13 +61,13 @@ export interface BillQueryParams {
 export interface PaginatedResponse<T> {
   records: T[]
   total: number
-  page: number
-  pageSize: number
+  current: number
+  size: number
 }
 
 // API 统一响应
 export interface ApiResponse<T> {
   code: number
-  message: string
+  msg: string
   data: T
 }
