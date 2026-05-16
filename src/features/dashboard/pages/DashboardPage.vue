@@ -1,89 +1,102 @@
-<!-- 首页看板：ECharts 数据可视化展示 -->
+<!-- 首页看板：Chart.js 全年周支出趋势 -->
 <script setup lang="ts">
-import { useAppStore } from '@/stores'
-import ECharts from '@/shared/components/ECharts.vue'
 import { computed } from 'vue'
+import { useAppStore } from '@/stores'
+import ChartView from '@/shared/components/ChartView.vue'
+import type { ChartData } from 'chart.js'
 
 const appStore = useAppStore()
 appStore.setPageTitle('首页')
 
-// 月度收支柱状图（示例数据）
-const barOption = computed(() => ({
-  title: { text: '月度收支', left: 'center' },
-  tooltip: { trigger: 'axis' as const },
-  legend: { data: ['收入', '支出'], bottom: 0 },
-  xAxis: { type: 'category' as const, data: ['1月', '2月', '3月', '4月', '5月', '6月'] },
-  yAxis: { type: 'value' as const },
-  series: [
+// Sample weekly labels: 第1周 ~ 第52周
+const labels = Array.from({ length: 52 }, (_, i) => `第${i + 1}周`)
+
+// Sample weekly expense data for Alipay (blue) and WeChat (green)
+const alipayData = [
+  2800, 3200, 1800, 1600, 1500, 1900, 1700, 2100, 1400, 1600,
+  1700, 1500, 1800, 2200, 1900, 1600, 1700, 2500, 2800, 1400,
+  1500, 1600, 1800, 1700, 1900, 1500, 1400, 1600, 1700, 1800,
+  1500, 1600, 1800, 1700, 1900, 1500, 2000, 1800, 2600, 3000,
+  1700, 1600, 1500, 1800, 1700, 1900, 2100, 2200, 2400, 2000,
+  1800, 1600,
+]
+
+const wechatData = [
+  2200, 2800, 1600, 1400, 1300, 1700, 1500, 1800, 1200, 1400,
+  1500, 1300, 1600, 1900, 1700, 1400, 1500, 2200, 2400, 1200,
+  1300, 1400, 1600, 1500, 1700, 1300, 1200, 1400, 1500, 1600,
+  1300, 1400, 1600, 1500, 1700, 1300, 1800, 1600, 2300, 2600,
+  1500, 1400, 1300, 1600, 1500, 1700, 1800, 1900, 2100, 1800,
+  1600, 1400,
+]
+
+const chartData = computed<ChartData<'line'>>(() => ({
+  labels,
+  datasets: [
     {
-      name: '收入',
-      type: 'bar' as const,
-      data: [12800, 13500, 14200, 13100, 14800, 15200],
-      itemStyle: { color: '#22c55e' },
+      label: '支付宝',
+      data: alipayData,
+      borderColor: '#3b82f6',
+      backgroundColor: 'rgba(59, 130, 246, 0.1)',
+      borderWidth: 2,
+      pointRadius: 3,
+      fill: false,
+      tension: 0.3,
     },
     {
-      name: '支出',
-      type: 'bar' as const,
-      data: [6200, 7800, 7100, 8400, 6900, 8100],
-      itemStyle: { color: '#ef4444' },
+      label: '微信',
+      data: wechatData,
+      borderColor: '#22c55e',
+      backgroundColor: 'rgba(34, 197, 94, 0.1)',
+      borderWidth: 2,
+      pointRadius: 3,
+      fill: false,
+      tension: 0.3,
     },
   ],
 }))
 
-// 支出分类饼图（示例数据）
-const pieOption = computed(() => ({
-  title: { text: '支出分类', left: 'center' },
-  tooltip: { trigger: 'item' as const, formatter: '{b}: {c}元 ({d}%)' },
-  series: [
-    {
-      type: 'pie' as const,
-      radius: ['40%', '65%'],
-      center: ['50%', '55%'],
-      data: [
-        { name: '餐饮', value: 3200 },
-        { name: '交通', value: 1200 },
-        { name: '购物', value: 2100 },
-        { name: '娱乐', value: 800 },
-        { name: '住房', value: 2500 },
-        { name: '其他', value: 900 },
-      ],
-      label: { show: true, formatter: '{b}' },
+const chartOptions = computed(() => ({
+  plugins: {
+    title: {
+      display: true,
+      text: '全年每周支出趋势',
+      font: { size: 16, weight: '500' as const },
+      padding: { bottom: 20 },
     },
-  ],
-}))
-
-// 余额趋势折线图（示例数据）
-const lineOption = computed(() => ({
-  title: { text: '账户余额趋势', left: 'center' },
-  tooltip: { trigger: 'axis' as const },
-  xAxis: { type: 'category' as const, data: ['1月', '2月', '3月', '4月', '5月', '6月'] },
-  yAxis: { type: 'value' as const },
-  series: [
-    {
-      type: 'line' as const,
-      data: [8500, 9200, 8800, 9600, 10200, 9800],
-      smooth: true,
-      areaStyle: { opacity: 0.3 },
-      itemStyle: { color: '#3b82f6' },
+    tooltip: {
+      callbacks: {
+        label: (ctx: { dataset: { label?: string }; parsed: { y: number } }) =>
+          `${ctx.dataset.label}: ${ctx.parsed.y}元`,
+      },
     },
-  ],
+  },
+  scales: {
+    y: {
+      title: {
+        display: true,
+        text: '支出金额（元）',
+      },
+    },
+    x: {
+      ticks: {
+        maxTicksLimit: 13,
+      },
+    },
+  },
 }))
 </script>
 
 <template>
   <div>
     <h1 class="text-2xl font-bold mb-6">首页看板</h1>
-
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <div class="rounded-xl border border-default p-4 bg-default">
-        <ECharts :option="barOption" class="h-[320px]" />
-      </div>
-      <div class="rounded-xl border border-default p-4 bg-default">
-        <ECharts :option="pieOption" class="h-[320px]" />
-      </div>
-      <div class="rounded-xl border border-default p-4 bg-default lg:col-span-2">
-        <ECharts :option="lineOption" class="h-[300px]" />
-      </div>
+    <div class="rounded-xl border border-default p-4 bg-default">
+      <ChartView
+        type="line"
+        :data="chartData"
+        :options="chartOptions"
+        height="400px"
+      />
     </div>
   </div>
 </template>
