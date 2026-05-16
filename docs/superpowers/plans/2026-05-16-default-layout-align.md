@@ -1,3 +1,25 @@
+# DefaultLayout Nuxt UI Alignment Implementation Plan
+
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+
+**Goal:** Align DefaultLayout.vue with Nuxt UI official Sidebar example pattern
+
+**Architecture:** Single-file change — modify `src/layouts/DefaultLayout.vue` to add props for variant/collapsible/side, switch collapse mode from offcanvas to icon, update CSS classes to match Nuxt UI example structure.
+
+**Tech Stack:** Vue 3, Nuxt UI (USidebar, UNavigationMenu), @vueuse/core
+
+---
+
+### Task 1: Update DefaultLayout.vue
+
+**Files:**
+- Modify: `src/layouts/DefaultLayout.vue`
+
+- [ ] **Step 1: Update script setup — add types and props**
+
+Change the script block to add Nuxt UI type imports and reactive props with defaults.
+
+```ts
 <script setup lang="ts">
 import { useDark, useToggle } from '@vueuse/core'
 import { ref, computed } from 'vue'
@@ -54,7 +76,13 @@ const breadcrumbItems = computed(() => {
   return [{ label: '首页', to: '/' }]
 })
 </script>
+```
 
+- [ ] **Step 2: Replace template — restructure USidebar and content area**
+
+Replace the entire `<template>` block:
+
+```vue
 <template>
   <div
     class="flex flex-1"
@@ -131,3 +159,36 @@ const breadcrumbItems = computed(() => {
     </div>
   </div>
 </template>
+```
+
+- [ ] **Step 3: Verify the change builds and renders**
+
+```bash
+pnpm dev
+# Visit http://localhost:5173
+# Expected: Sidebar collapses to icon-width (not fully hidden), 
+# toggle icon shows panel-left, title "万象数迹" in sidebar header
+```
+
+- [ ] **Step 4: Type-check**
+
+```bash
+pnpm typecheck
+# Expected: No type errors
+```
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add src/layouts/DefaultLayout.vue
+git commit -m "refactor: align DefaultLayout with Nuxt UI Sidebar example pattern
+
+- Add variant/collapsible/side props with defaults (inset/icon/left)
+- Switch collapse mode from offcanvas to icon
+- Align CSS structure with Nuxt UI official example
+- Replace hardcoded h2 header with title prop + UIcon slot
+- Bind UNavigationMenu collapsed state to sidebarOpen
+- Use dynamic toggle icon based on sidebar side
+- Add variant-conditional border and background classes
+"
+```
