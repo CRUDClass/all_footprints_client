@@ -3,7 +3,7 @@
 import { computed } from 'vue'
 import { useAppStore } from '@/stores'
 import ChartView from '@/shared/components/ChartView.vue'
-import type { ChartData } from 'chart.js'
+import type { ChartData, ChartOptions } from 'chart.js'
 
 const appStore = useAppStore()
 appStore.setPageTitle('首页')
@@ -56,18 +56,18 @@ const chartData = computed<ChartData<'line'>>(() => ({
   ],
 }))
 
-const chartOptions = computed(() => ({
+const chartOptions = computed<ChartOptions<'line'>>(() => ({
   plugins: {
     title: {
       display: true,
       text: '全年每周支出趋势',
-      font: { size: 16, weight: '500' as const },
+      font: { size: 16, weight: 500 },
       padding: { bottom: 20 },
     },
     tooltip: {
       callbacks: {
-        label: (ctx: { dataset: { label?: string }; parsed: { y: number } }) =>
-          `${ctx.dataset.label}: ${ctx.parsed.y}元`,
+        label: (ctx) =>
+          `${ctx.dataset.label}: ${ctx.parsed.y ?? 0}元`,
       },
     },
   },

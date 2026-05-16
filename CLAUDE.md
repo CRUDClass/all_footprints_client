@@ -44,6 +44,7 @@ src/
 - **Styling:** Tailwind CSS v4 + Nuxt UI components. Use `@nuxt/ui` CSS variables like `--ui-border`, `--ui-text-muted`.
 - **Nuxt UI:** Uses standalone Vite plugin (`@nuxt/ui/vite`) + Vue plugin (`@nuxt/ui/vue-plugin`). Root must wrap `<UApp>`. Components auto-imported with `U` prefix.
 - **UTable columns:** Column definitions must use `accessorKey` (data field) and `header` (display text), not `key`/`label`. Type with `ColumnDef<T>[]` from `@tanstack/vue-table`. Example: `const columns: ColumnDef<BillRecord>[] = [{ accessorKey: 'tradeTime', header: '交易时间' }]`.
+- **类型约束：** 当第三方库（如 chart.js、@tanstack/vue-table、@nuxt/ui 等）提供了明确的类型时（如 `ChartOptions<'line'>`、`ColumnDef<T>`、`NavigationMenuItem`），变量声明必须使用该类型，不允许依赖 TypeScript 自动推断或手写不兼容的类型标注。
 - **Path alias:** `@/` maps to `./src/`.
 
 ## Nuxt UI 组件使用规则
