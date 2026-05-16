@@ -7,12 +7,10 @@
         "chrome-devtools-mcp@latest",
         "--executablePath='/Applications/Google Chrome Dev.app/Contents/MacOS/Google Chrome Dev'"
       ]
-    }    "nuxt-ui": {
+    },
+    "nuxt-ui": {
       "command": "npx",
-      "args": [
-        "mcp-remote",
-        "https://ui.nuxt.com/mcp"
-      ]
+      "args": ["mcp-remote", "https://ui.nuxt.com/mcp"]
     }
   }
 }

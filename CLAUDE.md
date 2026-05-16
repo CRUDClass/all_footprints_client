@@ -15,7 +15,7 @@ pnpm format       # Prettier format src/**/*.{ts,vue,css}
 
 ## Project Architecture
 
-**Stack:** Vue 3 + Vite + Nuxt UI 4.7.1 (standalone Vue mode) + TypeScript + Pinia + Vue Router 4
+**Stack:** Vue 3 + Vite + Nuxt UI 4.7.1 (standalone Vue mode) + TypeScript + Pinia + Vue Router 4 + TanStack Table (`@tanstack/vue-table`)
 
 ```
 src/
@@ -43,7 +43,12 @@ src/
 - **State:** Pinia composition API stores (`defineStore('name', () => { ... })`).
 - **Styling:** Tailwind CSS v4 + Nuxt UI components. Use `@nuxt/ui` CSS variables like `--ui-border`, `--ui-text-muted`.
 - **Nuxt UI:** Uses standalone Vite plugin (`@nuxt/ui/vite`) + Vue plugin (`@nuxt/ui/vue-plugin`). Root must wrap `<UApp>`. Components auto-imported with `U` prefix.
+- **UTable columns:** Column definitions must use `accessorKey` (data field) and `header` (display text), not `key`/`label`. Type with `ColumnDef<T>[]` from `@tanstack/vue-table`. Example: `const columns: ColumnDef<BillRecord>[] = [{ accessorKey: 'tradeTime', header: '交易时间' }]`.
 - **Path alias:** `@/` maps to `./src/`.
+
+## Nuxt UI 组件使用规则
+
+- 使用 Nuxt UI 组件时（如 `UTable`、`UButton`、`UPagination` 等），必须先通过 `nuxt-ui` MCP 服务的工具（如 `get-component`、`get-component-metadata`、`search-documentation` 等）查阅官方文档，了解组件的 Props、Slots、类型定义以及 v4 版本的差异，再编写代码。
 
 ## Nuxt UI Standalone Mode Notes
 

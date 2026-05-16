@@ -3,6 +3,8 @@ import { useAppStore } from '@/stores'
 import { useBillData } from '@/features/data-import/composables/useBillData'
 import { useFileUpload } from '@/features/data-import/composables/useFileUpload'
 import { onMounted } from 'vue'
+import type { ColumnDef } from '@tanstack/vue-table'
+import type { BillRecord } from '@/data/types'
 
 const appStore = useAppStore()
 appStore.setPageTitle('微信账单')
@@ -10,18 +12,18 @@ appStore.setPageTitle('微信账单')
 const { bills, total, page, pageSize, loading, loadBills } = useBillData('WX')
 const { uploading, fileInput, handleFileChange, triggerFilePicker } = useFileUpload('WX', () => loadBills())
 
-const columns = [
-  { key: 'tradeTime', label: '交易时间' },
-  { key: 'incomeExpense', label: '收入/支出' },
-  { key: 'amount', label: '金额' },
-  { key: 'tradeNo', label: '交易单号' },
-  { key: 'counterparty', label: '交易对方' },
-  { key: 'product', label: '商品' },
-  { key: 'wxType', label: '交易类型' },
-  { key: 'paymentMethod', label: '支付方式' },
-  { key: 'status', label: '状态' },
-  { key: 'merchantNo', label: '商户单号' },
-  { key: 'remark', label: '备注' },
+const columns: ColumnDef<BillRecord>[] = [
+  { accessorKey: 'tradeTime', header: '交易时间' },
+  { accessorKey: 'incomeExpense', header: '收入/支出' },
+  { accessorKey: 'amount', header: '金额' },
+  { accessorKey: 'tradeNo', header: '交易单号' },
+  { accessorKey: 'counterparty', header: '交易对方' },
+  { accessorKey: 'product', header: '商品' },
+  { accessorKey: 'wxType', header: '交易类型' },
+  { accessorKey: 'paymentMethod', header: '支付方式' },
+  { accessorKey: 'status', header: '状态' },
+  { accessorKey: 'merchantNo', header: '商户单号' },
+  { accessorKey: 'remark', header: '备注' },
 ]
 
 onMounted(() => loadBills())

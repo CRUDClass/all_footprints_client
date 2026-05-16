@@ -3,6 +3,8 @@ import { useAppStore } from '@/stores'
 import { useBillData } from '@/features/data-import/composables/useBillData'
 import { useFileUpload } from '@/features/data-import/composables/useFileUpload'
 import { onMounted } from 'vue'
+import type { ColumnDef } from '@tanstack/vue-table'
+import type { BillRecord } from '@/data/types'
 
 const appStore = useAppStore()
 appStore.setPageTitle('支付宝账单')
@@ -10,16 +12,16 @@ appStore.setPageTitle('支付宝账单')
 const { bills, total, page, pageSize, loading, loadBills } = useBillData('ZFB')
 const { uploading, fileInput, handleFileChange, triggerFilePicker } = useFileUpload('ZFB', () => loadBills())
 
-const columns = [
-  { key: 'tradeTime', label: '交易时间' },
-  { key: 'incomeExpense', label: '收入/支出' },
-  { key: 'amount', label: '金额' },
-  { key: 'tradeNo', label: '交易单号' },
-  { key: 'category', label: '分类' },
-  { key: 'zfbAccount', label: '账户' },
-  { key: 'alipaySource', label: '来源' },
-  { key: 'alipayTags', label: '标签' },
-  { key: 'remark', label: '备注' },
+const columns: ColumnDef<BillRecord>[] = [
+  { accessorKey: 'tradeTime', header: '交易时间' },
+  { accessorKey: 'incomeExpense', header: '收入/支出' },
+  { accessorKey: 'amount', header: '金额' },
+  { accessorKey: 'tradeNo', header: '交易单号' },
+  { accessorKey: 'category', header: '分类' },
+  { accessorKey: 'zfbAccount', header: '账户' },
+  { accessorKey: 'alipaySource', header: '来源' },
+  { accessorKey: 'alipayTags', header: '标签' },
+  { accessorKey: 'remark', header: '备注' },
 ]
 
 onMounted(() => loadBills())
