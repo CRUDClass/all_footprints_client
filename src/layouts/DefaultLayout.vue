@@ -3,16 +3,19 @@ import { useDark, useToggle } from '@vueuse/core'
 import { ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
 
+// 暗色/亮色模式切换
 const isDark = useDark()
 const toggleDark = useToggle(isDark)
 
+// 侧边栏展开/收起状态
 const sidebarOpen = ref(false)
 
+// 左侧导航菜单项配置
 const navItems = [
-  { label: '首页', icon: 'i-heroicons-home', to: '/' },
+  { label: '首页', icon: 'i-lucide-home', to: '/' },
   {
     label: '账单',
-    icon: 'i-heroicons-arrow-up-tray',
+    icon: 'i-lucide-upload',
     defaultOpen: true,
     children: [
       { label: '微信', to: '/bill/wechat' },
@@ -23,6 +26,7 @@ const navItems = [
 
 const route = useRoute()
 
+// 面包屑：根据当前路由动态生成
 const breadcrumbItems = computed(() => {
   if (route.path === '/') return [{ label: '首页', to: '/' }]
   if (route.path === '/bill/wechat') {
@@ -69,7 +73,7 @@ const breadcrumbItems = computed(() => {
         class="h-(--ui-header-height) shrink-0 flex items-center gap-4 px-4 border-b border-default"
       >
         <UButton
-          icon="i-heroicons-bars-3"
+          icon="i-lucide-menu"
           color="neutral"
           variant="ghost"
           aria-label="Toggle sidebar"
@@ -82,7 +86,7 @@ const breadcrumbItems = computed(() => {
 
         <UTooltip :text="isDark ? '切换亮色模式' : '切换暗色模式'">
           <UButton
-            :icon="isDark ? 'i-heroicons-sun' : 'i-heroicons-moon'"
+            :icon="isDark ? 'i-lucide-sun' : 'i-lucide-moon'"
             color="neutral"
             variant="ghost"
             @click="toggleDark()"

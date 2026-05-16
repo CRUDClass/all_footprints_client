@@ -1,5 +1,6 @@
 import type { RouteRecordRaw } from 'vue-router'
 
+// 路由配置：DefaultLayout 作为父布局包裹所有子页面
 export const routes: RouteRecordRaw[] = [
   {
     path: '/',

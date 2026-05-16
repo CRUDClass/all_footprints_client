@@ -1,4 +1,4 @@
-// 基础数据源类型
+/** 基础数据源类型 */
 export interface DataSource {
   id: string
   name: string
@@ -7,7 +7,7 @@ export interface DataSource {
   updatedAt: string
 }
 
-// 数据记录基础类型
+/** 数据记录基础类型 */
 export interface DataRecord {
   id: string
   sourceId: string
@@ -15,7 +15,7 @@ export interface DataRecord {
   [key: string]: unknown
 }
 
-// 指标卡片
+/** 首页看板指标卡片 */
 export interface MetricCard {
   title: string
   value: number | string
@@ -24,7 +24,7 @@ export interface MetricCard {
   change?: number
 }
 
-// 账单交易记录
+/** 账单交易记录：支持微信(WX)和支付宝(ZFB)两种来源 */
 export interface BillRecord {
   id: number
   source: 'WX' | 'ZFB'
@@ -33,14 +33,14 @@ export interface BillRecord {
   amount: number
   remark: string
   tradeNo: string
-  // 微信特有
+  // 微信特有字段
   counterparty?: string
   product?: string
   wxType?: string
   paymentMethod?: string
   status?: string
   merchantNo?: string
-  // 支付宝特有
+  // 支付宝特有字段
   category?: string
   zfbAccount?: string
   alipaySource?: string
@@ -50,14 +50,14 @@ export interface BillRecord {
   deleted?: number
 }
 
-// 分页请求参数
+/** 账单列表分页查询参数 */
 export interface BillQueryParams {
   page: number
   pageSize: number
   source: 'WX' | 'ZFB'
 }
 
-// 分页响应
+/** 泛型分页响应结构 */
 export interface PaginatedResponse<T> {
   records: T[]
   total: number
@@ -65,7 +65,7 @@ export interface PaginatedResponse<T> {
   size: number
 }
 
-// API 统一响应
+/** 后端 API 统一响应格式：code=0 表示成功 */
 export interface ApiResponse<T> {
   code: number
   msg: string
