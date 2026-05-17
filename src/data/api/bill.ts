@@ -1,4 +1,4 @@
-import type { ApiResponse, BillQueryParams, BillRecord, PaginatedResponse } from '@/data/types'
+import type { ApiResponse, BillQueryParams, BillRecord, IncomeExpenseType, PaginatedResponse, WeeklyStatDTO } from '@/data/types'
 
 /** 上传账单文件（CSV/XLSX），根据 source 路由到微信或支付宝接口 */
 export async function uploadBill(file: File, source: 'WX' | 'ZFB'): Promise<ApiResponse<null>> {
@@ -23,5 +23,18 @@ export async function fetchBills(
 
   const response = await fetch(`/bill/${sourcePath}-bill-list?${query}`)
   if (!response.ok) throw new Error(`Fetch bills failed: ${response.statusText}`)
+  return response.json()
+}
+
+/** 按周维度统计微信/支付宝交易金额（当年），区分支出/收入 */
+export async function fetchWeeklyStats(
+  source: 'WX' | 'ZFB',
+  incomeExpense: IncomeExpenseType,
+): Promise<ApiResponse<WeeklyStatDTO[]>> {
+  const sourcePath = source === 'WX' ? 'wechat' : 'alipay'
+  const query = new URLSearchParams({ incomeExpense })
+
+  const response = await fetch(`/bill/stats/weekly/${sourcePath}?${query}`)
+  if (!response.ok) throw new Error(`Fetch weekly stats failed: ${response.statusText}`)
   return response.json()
 }
