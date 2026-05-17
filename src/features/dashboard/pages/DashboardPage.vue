@@ -1,41 +1,64 @@
-<!-- 首页看板：Chart.js 全年周支出趋势 -->
+<!-- 首页看板：Chart.js 全年周支出/收入趋势，支持 USwitch 切换 -->
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useAppStore } from '@/stores'
-import ChartView from '@/shared/components/ChartView.vue'
+import { fetchWeeklyStats } from '@/data/api/bill'
+import type { IncomeExpenseType, WeeklyStatDTO } from '@/data/types'
 import type { ChartData, ChartOptions } from 'chart.js'
+import ChartView from '@/shared/components/ChartView.vue'
 
 const appStore = useAppStore()
 appStore.setPageTitle('首页')
 
-// Sample weekly labels: 第1周 ~ 第52周
+// 收入/支出模式切换 (USwitch v-model: false=支出, true=收入)
+const isIncome = ref(false)
+const loading = ref(false)
+const wechatStats = ref<WeeklyStatDTO[]>([])
+const alipayStats = ref<WeeklyStatDTO[]>([])
+
+const incomeExpense = computed<IncomeExpenseType>(() =>
+  isIncome.value ? 'INCOME' : 'EXPENSE',
+)
+
+// 将 API 返回的 WeeklyStatDTO[] 按 weekNumber 映射到 52 周数组
+function mapToWeeklyArray(stats: WeeklyStatDTO[]): number[] {
+  const arr = Array(52).fill(0)
+  for (const s of stats) {
+    if (s.weekNumber >= 1 && s.weekNumber <= 52) {
+      arr[s.weekNumber - 1] = s.totalAmount
+    }
+  }
+  return arr
+}
+
+// 并行请求微信和支付宝周统计数据
+async function loadStats() {
+  loading.value = true
+  try {
+    const [wxResult, zfbResult] = await Promise.all([
+      fetchWeeklyStats('WX', incomeExpense.value),
+      fetchWeeklyStats('ZFB', incomeExpense.value),
+    ])
+    wechatStats.value = wxResult.data ?? []
+    alipayStats.value = zfbResult.data ?? []
+  } catch (err) {
+    console.error('加载周统计数据失败:', err)
+    // 保留上一次成功数据
+  } finally {
+    loading.value = false
+  }
+}
+
 const labels = Array.from({ length: 52 }, (_, i) => `第${i + 1}周`)
 
-// Sample weekly expense data for Alipay (blue) and WeChat (green)
-const alipayData = [
-  2800, 3200, 1800, 1600, 1500, 1900, 1700, 2100, 1400, 1600,
-  1700, 1500, 1800, 2200, 1900, 1600, 1700, 2500, 2800, 1400,
-  1500, 1600, 1800, 1700, 1900, 1500, 1400, 1600, 1700, 1800,
-  1500, 1600, 1800, 1700, 1900, 1500, 2000, 1800, 2600, 3000,
-  1700, 1600, 1500, 1800, 1700, 1900, 2100, 2200, 2400, 2000,
-  1800, 1600,
-]
-
-const wechatData = [
-  2200, 2800, 1600, 1400, 1300, 1700, 1500, 1800, 1200, 1400,
-  1500, 1300, 1600, 1900, 1700, 1400, 1500, 2200, 2400, 1200,
-  1300, 1400, 1600, 1500, 1700, 1300, 1200, 1400, 1500, 1600,
-  1300, 1400, 1600, 1500, 1700, 1300, 1800, 1600, 2300, 2600,
-  1500, 1400, 1300, 1600, 1500, 1700, 1800, 1900, 2100, 1800,
-  1600, 1400,
-]
+const chartTypeLabel = computed(() => (isIncome.value ? '收入' : '支出'))
 
 const chartData = computed<ChartData<'line'>>(() => ({
   labels,
   datasets: [
     {
       label: '支付宝',
-      data: alipayData,
+      data: mapToWeeklyArray(alipayStats.value),
       borderColor: '#3b82f6',
       backgroundColor: 'rgba(59, 130, 246, 0.1)',
       borderWidth: 2,
@@ -45,7 +68,7 @@ const chartData = computed<ChartData<'line'>>(() => ({
     },
     {
       label: '微信',
-      data: wechatData,
+      data: mapToWeeklyArray(wechatStats.value),
       borderColor: '#22c55e',
       backgroundColor: 'rgba(34, 197, 94, 0.1)',
       borderWidth: 2,
@@ -60,7 +83,7 @@ const chartOptions = computed<ChartOptions<'line'>>(() => ({
   plugins: {
     title: {
       display: true,
-      text: '全年每周支出趋势',
+      text: `全年每周${chartTypeLabel.value}趋势`,
       font: { size: 16, weight: 500 },
       padding: { bottom: 20 },
     },
@@ -75,7 +98,7 @@ const chartOptions = computed<ChartOptions<'line'>>(() => ({
     y: {
       title: {
         display: true,
-        text: '支出金额（元）',
+        text: `${chartTypeLabel.value}金额（元）`,
       },
     },
     x: {
@@ -85,11 +108,24 @@ const chartOptions = computed<ChartOptions<'line'>>(() => ({
     },
   },
 }))
+
+onMounted(loadStats)
+watch(isIncome, loadStats)
 </script>
 
 <template>
   <div>
-    <h1 class="text-2xl font-bold mb-6">首页看板</h1>
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-2xl font-bold">首页看板</h1>
+      <USwitch
+        v-model="isIncome"
+        :loading="loading"
+        :label="`${chartTypeLabel}统计`"
+        unchecked-icon="i-lucide-trending-down"
+        checked-icon="i-lucide-trending-up"
+        color="primary"
+      />
+    </div>
     <div class="rounded-xl border border-default p-4 bg-default">
       <ChartView
         type="line"
