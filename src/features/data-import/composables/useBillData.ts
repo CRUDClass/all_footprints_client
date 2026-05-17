@@ -11,7 +11,7 @@ export function useBillData(source: 'WX' | 'ZFB') {
   const bills = ref<BillRecord[]>([])
   const total = ref(0)
   const page = ref(1)
-  const pageSize = ref(20)
+  const pageSize = ref(10)
   const loading = ref(false)
 
   /** 调用 API 加载账单，page 变化时自动触发 */
