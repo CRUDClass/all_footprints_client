@@ -1,6 +1,6 @@
-import { ref, watch } from 'vue'
 import { fetchBills } from '@/data/api/bill'
 import type { BillRecord } from '@/data/types'
+import { ref, watch } from 'vue'
 
 /**
  * 账单数据管理：加载、分页、响应式状态
@@ -23,7 +23,7 @@ export function useBillData(source: 'WX' | 'ZFB') {
         pageSize: pageSize.value,
         source,
       })
-      if (res.code !== 0) {
+      if (res.code !== 200) {
         console.error('获取账单数据失败:', res.msg)
         return
       }

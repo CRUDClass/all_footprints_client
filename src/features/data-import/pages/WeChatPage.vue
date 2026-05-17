@@ -1,12 +1,13 @@
 <!-- 微信账单页：文件上传 + 分页表格展示 -->
 <script setup lang="ts">
-import { useAppStore } from '@/stores'
+import type { BillRecord } from '@/data/types'
 import { useBillData } from '@/features/data-import/composables/useBillData'
 import { useFileUpload } from '@/features/data-import/composables/useFileUpload'
-import { onMounted } from 'vue'
+import { useAppStore } from '@/stores'
 import type { ColumnDef } from '@tanstack/vue-table'
-import type { BillRecord } from '@/data/types'
+import { h, onMounted, resolveComponent } from 'vue'
 
+const UBadge = resolveComponent('UBadge')
 const appStore = useAppStore()
 appStore.setPageTitle('微信账单')
 
@@ -18,8 +19,20 @@ const { uploading, fileInput, handleFileChange, triggerFilePicker } = useFileUpl
 // 表格列定义：映射 BillRecord 字段 → 中文表头
 const columns: ColumnDef<BillRecord>[] = [
   { accessorKey: 'tradeTime', header: '交易时间' },
-  { accessorKey: 'incomeExpense', header: '收入/支出' },
-  { accessorKey: 'amount', header: '金额' },
+  {
+    accessorKey: 'incomeExpense', header: '收入/支出',
+    cell: ({ row }) => {
+      const color = {
+        'INCOME': 'success' as const,
+        'EXPENSE': 'error' as const
+      }[row.getValue('incomeExpense') as string]
+
+      return h(UBadge, { class: 'capitalize', variant: 'subtle', color }, () =>
+        row.getValue('incomeExpense')
+      )
+    }
+  },
+  { accessorKey: 'amount', header: '金额(¥)' },
   { accessorKey: 'tradeNo', header: '交易单号' },
   { accessorKey: 'counterparty', header: '交易对方' },
   { accessorKey: 'product', header: '商品' },
@@ -37,21 +50,10 @@ onMounted(() => loadBills())
   <div>
     <div class="mb-4">
       <!-- 导入按钮：触发隐藏的 file input -->
-      <UButton
-        :loading="uploading"
-        :disabled="uploading"
-        icon="i-lucide-upload"
-        @click="triggerFilePicker"
-      >
+      <UButton :loading="uploading" :disabled="uploading" icon="i-lucide-upload" @click="triggerFilePicker">
         导入
       </UButton>
-      <input
-        ref="fileInput"
-        type="file"
-        hidden
-        accept=".xlsx,.xls"
-        @change="handleFileChange"
-      />
+      <input ref="fileInput" type="file" hidden accept=".xlsx,.xls" @change="handleFileChange" />
     </div>
 
     <!-- 账单数据表格 + 底部分页 -->
