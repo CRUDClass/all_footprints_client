@@ -57,7 +57,7 @@ onMounted(() => loadBills())
     <UTable :columns="columns" :data="bills" :loading="loading" />
 
     <div class="flex justify-center mt-4">
-      <UPagination v-model="page" :total="total" :items-per-page="pageSize" />
+      <UPagination v-model:page="page" :total="total" :items-per-page="pageSize" />
     </div>
   </div>
 </template>
