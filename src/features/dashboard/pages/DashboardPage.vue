@@ -31,21 +31,29 @@ function mapToWeeklyArray(stats: WeeklyStatDTO[]): number[] {
   return arr
 }
 
+let loadId = 0
+
 // 并行请求微信和支付宝周统计数据
 async function loadStats() {
+  const id = ++loadId
   loading.value = true
   try {
     const [wxResult, zfbResult] = await Promise.all([
       fetchWeeklyStats('WX', incomeExpense.value),
       fetchWeeklyStats('ZFB', incomeExpense.value),
     ])
+    if (id !== loadId) return // discard stale response
     wechatStats.value = wxResult.data ?? []
     alipayStats.value = zfbResult.data ?? []
   } catch (err) {
-    console.error('加载周统计数据失败:', err)
-    // 保留上一次成功数据
+    if (id === loadId) {
+      console.error('加载周统计数据失败:', err)
+      // 保留上一次成功数据
+    }
   } finally {
-    loading.value = false
+    if (id === loadId) {
+      loading.value = false
+    }
   }
 }
 
