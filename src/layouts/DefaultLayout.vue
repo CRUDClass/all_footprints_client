@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { useDark, useToggle } from '@vueuse/core'
-import { ref, computed } from 'vue'
-import { useRoute } from 'vue-router'
 import type { NavigationMenuItem, SidebarProps } from '@nuxt/ui'
+import { useDark, useToggle } from '@vueuse/core'
+import { computed, ref } from 'vue'
+import { useRoute } from 'vue-router'
 
 const props = withDefaults(
   defineProps<Pick<SidebarProps, 'variant' | 'collapsible' | 'side'>>(),
@@ -28,8 +28,8 @@ const navItems: NavigationMenuItem[] = [
     icon: 'i-lucide-upload',
     defaultOpen: true,
     children: [
-      { label: '微信', to: '/bill/wechat' },
-      { label: '支付宝', to: '/bill/alipay' },
+      { label: '微信', icon: 'i-custom:wechat', to: '/bill/wechat' },
+      { label: '支付宝', icon: 'i-custom:alipay', to: '/bill/alipay' },
     ],
   },
 ]
@@ -56,65 +56,38 @@ const breadcrumbItems = computed(() => {
 </script>
 
 <template>
-  <div
-    class="flex flex-1"
-    :class="[
-      variant === 'inset' && 'bg-neutral-50 dark:bg-neutral-950',
-      side === 'right' && 'flex-row-reverse',
-    ]"
-  >
-    <USidebar
-      v-model:open="sidebarOpen"
-      :variant="variant"
-      :collapsible="collapsible"
-      :side="side"
-      title="万象数迹"
-      :ui="{
-        container: 'h-full',
-      }"
-    >
+  <div class="flex flex-1" :class="[
+    variant === 'inset' && 'bg-neutral-50 dark:bg-neutral-950',
+    side === 'right' && 'flex-row-reverse',
+  ]">
+    <USidebar v-model:open="sidebarOpen" :variant="variant" :collapsible="collapsible" :side="side" title="万象数迹" :ui="{
+      container: 'h-full',
+    }">
       <template #header>
         <UIcon name="i-lucide-footprints" class="size-8" />
       </template>
 
-      <UNavigationMenu
-        :items="navItems"
-        orientation="vertical"
-        :collapsed="!sidebarOpen"
-        :ui="{ link: 'p-1.5 overflow-hidden' }"
-      />
+      <UNavigationMenu :items="navItems" orientation="vertical" :collapsed="!sidebarOpen"
+        :ui="{ link: 'p-1.5 overflow-hidden' }" />
     </USidebar>
 
     <div
-      class="flex-1 flex flex-col overflow-hidden lg:peer-data-[variant=floating]:my-4 peer-data-[variant=inset]:m-4 lg:peer-data-[variant=inset]:not-peer-data-[collapsible=offcanvas]:ms-0 peer-data-[variant=inset]:rounded-xl peer-data-[variant=inset]:shadow-sm peer-data-[variant=inset]:ring peer-data-[variant=inset]:ring-default bg-default"
-    >
+      class="flex-1 flex flex-col overflow-hidden lg:peer-data-[variant=floating]:my-4 peer-data-[variant=inset]:m-4 lg:peer-data-[variant=inset]:not-peer-data-[collapsible=offcanvas]:ms-0 peer-data-[variant=inset]:rounded-xl peer-data-[variant=inset]:shadow-sm peer-data-[variant=inset]:ring peer-data-[variant=inset]:ring-default bg-default">
       <!-- Top bar: toggle + breadcrumb + dark mode -->
-      <div
-        class="h-(--ui-header-height) shrink-0 flex items-center gap-4 px-4"
-        :class="[
-          variant !== 'floating' && 'border-b border-default',
-          side === 'right' && 'justify-end',
-        ]"
-      >
-        <UButton
-          :icon="side === 'left' ? 'i-lucide-panel-left' : 'i-lucide-panel-right'"
-          color="neutral"
-          variant="ghost"
-          aria-label="侧边栏切换"
-          @click="sidebarOpen = !sidebarOpen"
-        />
+      <div class="h-(--ui-header-height) shrink-0 flex items-center gap-4 px-4" :class="[
+        variant !== 'floating' && 'border-b border-default',
+        side === 'right' && 'justify-end',
+      ]">
+        <UButton :icon="side === 'left' ? 'i-lucide-panel-left' : 'i-lucide-panel-right'" color="neutral"
+          variant="ghost" aria-label="侧边栏切换" @click="sidebarOpen = !sidebarOpen" />
 
         <div class="flex-1 flex justify-center">
           <UBreadcrumb :items="breadcrumbItems" />
         </div>
 
         <UTooltip :text="isDark ? '切换亮色模式' : '切换暗色模式'">
-          <UButton
-            :icon="isDark ? 'i-lucide-sun' : 'i-lucide-moon'"
-            color="neutral"
-            variant="ghost"
-            @click="toggleDark()"
-          />
+          <UButton :icon="isDark ? 'i-lucide-sun' : 'i-lucide-moon'" color="neutral" variant="ghost"
+            @click="toggleDark()" />
         </UTooltip>
       </div>
 
