@@ -71,3 +71,12 @@ export interface ApiResponse<T> {
   msg: string
   data: T
 }
+
+/** 收入/支出类型：用于账单统计查询 */
+export type IncomeExpenseType = 'EXPENSE' | 'INCOME'
+
+/** 每周统计数据：来自 /bill/stats/weekly/* 接口 */
+export interface WeeklyStatDTO {
+  weekNumber: number
+  totalAmount: number
+}
