@@ -46,6 +46,7 @@ src/
 - **UTable columns:** Column definitions must use `accessorKey` (data field) and `header` (display text), not `key`/`label`. Type with `ColumnDef<T>[]` from `@tanstack/vue-table`. Example: `const columns: ColumnDef<BillRecord>[] = [{ accessorKey: 'tradeTime', header: '交易时间' }]`.
 - **类型约束：** 当第三方库（如 chart.js、@tanstack/vue-table、@nuxt/ui 等）提供了明确的类型时（如 `ChartOptions<'line'>`、`ColumnDef<T>`、`NavigationMenuItem`），变量声明必须使用该类型，不允许依赖 TypeScript 自动推断或手写不兼容的类型标注。
 - **Path alias:** `@/` maps to `./src/`.
+- **API Loading:** 所有 API 调用必须使用 `shared/composables/useLoading.ts` 提供的 `useLoading(fn, { minDuration: 1000 })` composable，保证 loading 状态至少显示 1s。不要在组件或业务 composable 中手动管理 `loading = ref(true/false)`。加载态视觉反馈优先使用 `UTable :loading`、`UButton :loading` 或 `<USkeleton>` 组件。
 
 ## Nuxt UI 组件使用规则
 
