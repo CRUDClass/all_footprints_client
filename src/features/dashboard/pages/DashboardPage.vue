@@ -6,13 +6,13 @@ import { fetchWeeklyStats } from '@/data/api/bill'
 import type { IncomeExpenseType, WeeklyStatDTO } from '@/data/types'
 import type { ChartData, ChartOptions } from 'chart.js'
 import ChartView from '@/shared/components/ChartView.vue'
+import { useLoading } from '@/shared/composables/useLoading'
 
 const appStore = useAppStore()
 appStore.setPageTitle('首页')
 
 // 收入/支出模式切换 (USwitch v-model: false=支出, true=收入)
 const isIncome = ref(false)
-const loading = ref(false)
 const wechatStats = ref<WeeklyStatDTO[]>([])
 const alipayStats = ref<WeeklyStatDTO[]>([])
 
@@ -33,28 +33,24 @@ function mapToWeeklyArray(stats: WeeklyStatDTO[]): number[] {
 
 let loadId = 0
 
-// 并行请求微信和支付宝周统计数据
-async function loadStats() {
-  const id = ++loadId
-  loading.value = true
-  try {
+// useLoading 自动管理 loading（min 1s）+ pendingCount 防折叠
+// loadId 在内部闭包中做数据过期丢弃，防止快速切换时数据错乱
+const { loading, execute: loadStats } = useLoading(
+  async () => {
+    const id = ++loadId
     const [wxResult, zfbResult] = await Promise.all([
       fetchWeeklyStats('WX', incomeExpense.value),
       fetchWeeklyStats('ZFB', incomeExpense.value),
     ])
-    if (id !== loadId) return // discard stale response
+    if (id !== loadId) return // 丢弃过期响应
     wechatStats.value = wxResult.data ?? []
     alipayStats.value = zfbResult.data ?? []
-  } catch (err) {
-    if (id === loadId) {
-      console.error('加载周统计数据失败:', err)
-      // 保留上一次成功数据
-    }
-  } finally {
-    if (id === loadId) {
-      loading.value = false
-    }
-  }
+  },
+  { minDuration: 1000 },
+)
+
+function onError(err: unknown) {
+  console.error('加载周统计数据失败:', err)
 }
 
 const labels = Array.from({ length: 52 }, (_, i) => `第${i + 1}周`)
@@ -117,8 +113,8 @@ const chartOptions = computed<ChartOptions<'line'>>(() => ({
   },
 }))
 
-onMounted(loadStats)
-watch(isIncome, loadStats)
+onMounted(() => loadStats().catch(onError))
+watch(isIncome, () => loadStats().catch(onError))
 </script>
 
 <template>
@@ -135,7 +131,9 @@ watch(isIncome, loadStats)
       />
     </div>
     <div class="rounded-xl border border-default p-4 bg-default">
+      <USkeleton v-if="loading" class="h-[400px] w-full rounded-xl" />
       <ChartView
+        v-else
         type="line"
         :data="chartData"
         :options="chartOptions"
