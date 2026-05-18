@@ -1,5 +1,6 @@
 import { fetchBills } from '@/data/api/bill'
 import type { BillRecord } from '@/data/types'
+import { useLoading } from '@/shared/composables/useLoading'
 import { ref, watch } from 'vue'
 
 /**
@@ -12,29 +13,27 @@ export function useBillData(source: 'WX' | 'ZFB') {
   const total = ref(0)
   const page = ref(1)
   const pageSize = ref(10)
-  const loading = ref(false)
 
-  /** 调用 API 加载账单，page 变化时自动触发 */
-  async function loadBills() {
-    loading.value = true
-    try {
-      const res = await fetchBills({
-        page: page.value,
-        pageSize: pageSize.value,
-        source,
-      })
-      if (res.code !== 200) {
-        console.error('获取账单数据失败:', res.msg)
-        return
+  const { loading, execute: loadBills } = useLoading(
+    async () => {
+      try {
+        const res = await fetchBills({
+          page: page.value,
+          pageSize: pageSize.value,
+          source,
+        })
+        if (res.code !== 200) {
+          console.error('获取账单数据失败:', res.msg)
+          return
+        }
+        bills.value = res.data.records
+        total.value = res.data.total
+      } catch (e) {
+        console.error('获取账单数据失败:', e)
       }
-      bills.value = res.data.records
-      total.value = res.data.total
-    } catch (e) {
-      console.error('获取账单数据失败:', e)
-    } finally {
-      loading.value = false
-    }
-  }
+    },
+    { minDuration: 1000 },
+  )
 
   // 翻页时自动重新加载数据
   watch(page, () => loadBills())

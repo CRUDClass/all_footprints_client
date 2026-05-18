@@ -1,5 +1,6 @@
 import { ref } from 'vue'
 import { uploadBill } from '@/data/api/bill'
+import { useLoading } from '@/shared/composables/useLoading'
 
 /**
  * 文件上传：隐藏 input + 按钮触发，上传成功后回调刷新数据
@@ -7,8 +8,19 @@ import { uploadBill } from '@/data/api/bill'
  * @param onSuccess - 上传成功后的回调（通常用于重新加载列表）
  */
 export function useFileUpload(source: 'WX' | 'ZFB', onSuccess: () => void) {
-  const uploading = ref(false)
   const fileInput = ref<HTMLInputElement | undefined>()
+
+  const { loading: uploading, execute: doUpload } = useLoading(
+    async (file: File) => {
+      try {
+        await uploadBill(file, source)
+        onSuccess()
+      } catch (e) {
+        console.error('文件上传失败:', e)
+      }
+    },
+    { minDuration: 1000 },
+  )
 
   /** 文件选择后的上传处理 */
   async function handleFileChange(event: Event) {
@@ -16,14 +28,9 @@ export function useFileUpload(source: 'WX' | 'ZFB', onSuccess: () => void) {
     const file = target.files?.[0]
     if (!file) return
 
-    uploading.value = true
     try {
-      await uploadBill(file, source)
-      onSuccess()
-    } catch (e) {
-      console.error('文件上传失败:', e)
+      await doUpload(file)
     } finally {
-      uploading.value = false
       // 重置 input 以允许重复选择同一文件
       target.value = ''
     }
