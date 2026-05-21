@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { NavigationMenuItem, SidebarProps } from '@nuxt/ui'
-import { useDark, useToggle } from '@vueuse/core'
-import { computed, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import type { NavigationMenuItem, SidebarProps } from '@nuxt/ui';
+import { useDark, useToggle } from '@vueuse/core';
+import { computed, ref } from 'vue';
+import { useRoute } from 'vue-router';
 
 const props = withDefaults(
   defineProps<Pick<SidebarProps, 'variant' | 'collapsible' | 'side'>>(),
@@ -79,7 +79,8 @@ const breadcrumbItems = computed(() => {
     </USidebar>
 
     <div
-      class="flex-1 flex flex-col overflow-hidden lg:peer-data-[variant=floating]:my-4 peer-data-[variant=inset]:m-4 lg:peer-data-[variant=inset]:not-peer-data-[collapsible=offcanvas]:ms-0 peer-data-[variant=inset]:rounded-xl peer-data-[variant=inset]:shadow-sm peer-data-[variant=inset]:ring peer-data-[variant=inset]:ring-default bg-default">
+      class="flex-1 flex flex-col overflow-hidden lg:peer-data-[variant=floating]:my-4 peer-data-[variant=inset]:m-4 lg:peer-data-[variant=inset]:not-peer-data-[collapsible=offcanvas]:ms-0 peer-data-[variant=inset]:rounded-xl peer-data-[variant=inset]:shadow-sm peer-data-[variant=inset]:ring peer-data-[variant=inset]:ring-default bg-default"
+      style="height:98vh">
       <!-- Top bar: toggle + breadcrumb + dark mode -->
       <div class="h-(--ui-header-height) shrink-0 flex items-center gap-4 px-4" :class="[
         variant !== 'floating' && 'border-b border-default',
