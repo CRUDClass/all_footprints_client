@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import type { AiBalance } from '@/data/types/ai'
+import type { AiBalance } from '@/data/types/ai';
+import { computed } from 'vue';
 
 const FIELD_MAP: Partial<Record<keyof AiBalance, string>> = {
   totalBalance: '总额',
@@ -31,24 +31,19 @@ const specificFields = computed(() => {
 </script>
 
 <template>
-  <UPageCard :title="name" variant="outline">
+  <UPageCard variant="outline">
     <template #leading>
-      <UBadge
-        :color="balance.available ? 'success' : 'error'"
-        variant="soft"
-        size="sm"
-      >
-        {{ balance.available ? '可用' : '不可用' }}
-      </UBadge>
+      <div class="flex items-center gap-2 mb-1">
+        <span class="text-base font-semibold">{{ name }}</span>
+        <UBadge :color="balance.available ? 'success' : 'error'" variant="soft" size="sm">
+          {{ balance.available ? '可用' : '不可用' }}
+        </UBadge>
+      </div>
     </template>
 
     <template #body>
       <div class="grid grid-cols-2 gap-3">
-        <div
-          v-for="field in specificFields"
-          :key="field.key"
-          class="bg-(--ui-bg-elevated)/50 rounded-md p-2.5"
-        >
+        <div v-for="field in specificFields" :key="field.key" class="bg-(--ui-bg-elevated)/50 rounded-md p-2.5 w-full">
           <div class="text-xs text-(--ui-text-muted) mb-0.5">
             {{ field.label }}
           </div>
