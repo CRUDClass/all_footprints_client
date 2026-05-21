@@ -44,7 +44,7 @@ const specificFields = computed(() => {
     <template #body>
       <div class="grid grid-cols-2 gap-3">
         <div v-for="field in specificFields" :key="field.key" class="bg-(--ui-bg-elevated)/50 rounded-md p-2.5"
-          style="width: 27.5vh;">
+          style="width: 25vh;">
           <div class="text-xs text-(--ui-text-muted) mb-0.5">
             {{ field.label }}
           </div>
