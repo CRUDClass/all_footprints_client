@@ -21,6 +21,11 @@ export const routes: RouteRecordRaw[] = [
         name: 'bill-alipay',
         component: () => import('@/features/data-import/pages/AlipayPage.vue'),
       },
+      {
+        path: 'llm-balance',
+        name: 'llm-balance',
+        component: () => import('@/features/llm-balance/pages/LlmBalancePage.vue'),
+      },
     ],
   },
 ]
