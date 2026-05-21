@@ -32,6 +32,7 @@ const navItems: NavigationMenuItem[] = [
       { label: '支付宝', icon: 'i-custom:alipay', to: '/bill/alipay' },
     ],
   },
+  { label: 'LLM 余额', icon: 'i-lucide-brain', to: '/llm-balance' },
 ]
 
 const route = useRoute()
@@ -49,6 +50,12 @@ const breadcrumbItems = computed(() => {
     return [
       { label: '首页', to: '/' },
       { label: '支付宝', to: '/bill/alipay' },
+    ]
+  }
+  if (route.path === '/llm-balance') {
+    return [
+      { label: '首页', to: '/' },
+      { label: 'LLM 余额', to: '/llm-balance' },
     ]
   }
   return [{ label: '首页', to: '/' }]
